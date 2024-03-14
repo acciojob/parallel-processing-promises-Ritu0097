@@ -6,28 +6,26 @@ const images = [
   { url: "https://picsum.photos/id/238/200/300" },
   { url: "https://picsum.photos/id/239/200/300" },
 ];
-function loadImage(url) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = url;
 
-    console.dir(img);
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(`Failed to load image's URL: ${url}`);
-  });
-}
+const imageLoad = (url) => {
+  return `<img src='${url}' />`;
+};
 
-function downloadImages(imageArray) {
-  return Promise.all(imageArray.map((imageObj) => loadImage(imageObj.url)));
-}
+const all = async () => {
+  try {
+    const gallery = await Promise.all(images.map((val) => fetch(val.url)));
+    gallery.forEach((val) => {
+      output.insertAdjacentHTML("beforeend", imageLoad(val.url));
+    });
 
-function displayImages(images) {
-  images.forEach((img) => output.appendChild(img));
-}
+    return gallery;
+  } catch (err) {
+    return "failed to load images";
+  }
+};
 
-document
-  btn.addEventListener("click", () => {
-    downloadImages(images)
-      .then(displayImages)
-      .catch((error) => console.error(error));
-  });
+btn.addEventListener("click", () => {
+  images.forEach((val) => {
+      output.insertAdjacentHTML("beforeend", imageLoad(val.url));
+    });
+});
